@@ -42,15 +42,15 @@ export default function AnalysisPage() {
         const score = Math.floor(Math.random() * 30) + 50; // Initial simulated base score
         const feedback = await atsScoreFeedbackAndSuggestions({
           atsScore: score,
-          strengths: parsedData.analysis.importantSkills,
-          weaknesses: parsedData.analysis.missingSkills,
+          strengths: parsedData.analysis.importantSkills || [],
+          weaknesses: parsedData.analysis.missingSkills || [],
           suggestions: ["Add more quantitative achievements", "Optimize header for parsing"],
           targetRole: parsedData.targetRole,
-          currentResumeSummary: parsedData.resumeText.slice(0, 500)
+          currentResumeSummary: (parsedData.resumeText || "").slice(0, 500)
         });
         setAtsResult({ ...feedback, score });
       } catch (e) {
-        console.error(e);
+        console.error("Failed to generate ATS feedback:", e);
       } finally {
         setIsLoading(false);
       }
@@ -59,7 +59,7 @@ export default function AnalysisPage() {
     generateATS();
   }, [router]);
 
-  if (isLoading || !data) {
+  if (isLoading || !data || !atsResult) {
     return (
       <div className="h-screen flex flex-col items-center justify-center gap-4 bg-background">
         <BrainCircuit className="w-12 h-12 text-accent animate-pulse" />
@@ -110,13 +110,13 @@ export default function AnalysisPage() {
                   strokeWidth="8"
                   strokeDasharray="440"
                   initial={{ strokeDashoffset: 440 }}
-                  animate={{ strokeDashoffset: 440 - (440 * atsResult.score) / 100 }}
+                  animate={{ strokeDashoffset: 440 - (440 * (atsResult.score || 0)) / 100 }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   className="text-accent"
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-4xl font-headline font-bold">{atsResult.score}</span>
+                <span className="text-4xl font-headline font-bold">{atsResult.score || 0}</span>
                 <span className="text-xs text-muted-foreground uppercase tracking-wider">Score</span>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function AnalysisPage() {
                   <Trophy className="w-4 h-4" /> Key Strengths
                 </h4>
                 <ul className="space-y-2">
-                  {atsResult.strengthHighlights.map((s: string, i: number) => (
+                  {(atsResult.strengthHighlights || []).map((s: string, i: number) => (
                     <li key={i} className="text-sm flex items-start gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-accent mt-1.5 shrink-0" />
                       {s}
@@ -165,7 +165,7 @@ export default function AnalysisPage() {
                   <AlertTriangle className="w-4 h-4" /> Improvement Areas
                 </h4>
                 <ul className="space-y-2">
-                  {atsResult.actionableSuggestions.slice(0, 3).map((s: string, i: number) => (
+                  {(atsResult.actionableSuggestions || []).slice(0, 3).map((s: string, i: number) => (
                     <li key={i} className="text-sm flex items-start gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-yellow-500 mt-1.5 shrink-0" />
                       {s}
@@ -192,7 +192,7 @@ export default function AnalysisPage() {
                 <CardTitle className="text-lg text-red-400">Missing Skills</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-2">
-                {data.analysis.missingSkills.map((s: string) => (
+                {(data.analysis.missingSkills || []).map((s: string) => (
                   <Badge key={s} variant="outline" className="border-red-500/20 text-red-300">{s}</Badge>
                 ))}
               </CardContent>
@@ -202,7 +202,7 @@ export default function AnalysisPage() {
                 <CardTitle className="text-lg text-accent">Important Skills</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-2">
-                {data.analysis.importantSkills.map((s: string) => (
+                {(data.analysis.importantSkills || []).map((s: string) => (
                   <Badge key={s} variant="outline" className="border-accent/20 text-accent">{s}</Badge>
                 ))}
               </CardContent>
@@ -212,7 +212,7 @@ export default function AnalysisPage() {
                 <CardTitle className="text-lg text-muted-foreground">Optional/Supportive</CardTitle>
               </CardHeader>
               <CardContent className="flex flex-wrap gap-2">
-                {data.analysis.optionalSkills.map((s: string) => (
+                {(data.analysis.optionalSkills || []).map((s: string) => (
                   <Badge key={s} variant="outline" className="border-white/10 text-muted-foreground">{s}</Badge>
                 ))}
               </CardContent>
@@ -224,7 +224,7 @@ export default function AnalysisPage() {
           <Card className="glass-morphism border-none text-center py-20">
             <Map className="w-12 h-12 text-accent mx-auto mb-4 opacity-50" />
             <h3 className="text-2xl font-headline font-bold mb-4">Generate Personalized Learning Roadmap</h3>
-            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">We've identified {data.analysis.missingSkills.length} critical skills you need to master. Get a week-by-week guide to expertise.</p>
+            <p className="text-muted-foreground mb-8 max-w-lg mx-auto">We've identified {(data.analysis.missingSkills || []).length} critical skills you need to master. Get a week-by-week guide to expertise.</p>
             <Button size="lg" className="bg-primary" onClick={() => router.push("/roadmap")}>View Full Roadmap</Button>
           </Card>
         </TabsContent>
