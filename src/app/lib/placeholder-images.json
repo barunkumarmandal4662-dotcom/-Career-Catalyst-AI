@@ -1,0 +1,17 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "hero-dashboard",
+      "description": "A sleek, modern analytics dashboard showing career progress and skill analysis.",
+      "imageUrl": "https://picsum.photos/seed/career-1/1200/800",
+      "imageHint": "analytics dashboard"
+    },
+    {
+      "id": "career-growth",
+      "description": "Abstract representation of career growth and networking.",
+      "imageUrl": "https://picsum.photos/seed/career-2/600/400",
+      "imageHint": "career growth"
+    }
+  ]
+}
