@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Progress } from "@/components/ui/progress";
-import { Upload, FileText, CheckCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Upload, FileText, CheckCircle, ArrowRight, Loader2, Target } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { aiSkillGapAnalysis } from "@/ai/flows/ai-skill-gap-analysis";
 
